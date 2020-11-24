@@ -1,0 +1,76 @@
+add8:
+00 sub sp, sp, #1 // push
+01 mov r7, lr
+02 mov r6, sp    // load/store can not use sp directly, so copy it to r6
+03 str r7, [r6]  // store link reg to memory
+04 sub sp, sp, #1
+05 mov r6, sp    // load/store can not use sp directly, so copy it to r6
+
+06 mov r4, r0     // r0 has the address of the array
+07 ldr r0, [r4]   // load a to r0
+08 add r4, r4, #1
+09 ldr r1, [r4]   // load b to r1
+0a add r4, r4, #1
+0b ldr r2, [r4]   // load c to r2
+0c add r4, r4, #1
+0d ldr r3, [r4]   // load d to r3
+0e add r4, r4, #1
+0f str r4, [r6]   // store r4 to memory 0
+10 bl <add4> 23
+
+11 mov r5, r0     // move the sum of first 4 numbers
+12 mov r6, sp
+13 ldr r4, [r6]   // load the address to r4
+14 ldr r0, [r4]   // load a to r0
+15 add r4, r4, #1
+16 ldr r1, [r4]   // load b to r1
+17 add r4, r4, #1
+18 ldr r2, [r4]   // load c to r2
+19 add r4, r4, #1
+1a ldr r3, [r4]   // load d to r3
+1b bl <add4>
+1c mov r1, r5     // move the sum of first 4 numbers
+1d bl <add2>
+1e add sp, sp, #1 // pop, release the modified address of the array
+1f mov r6, sp
+20 ldr r7, [r6]   // load the link reg back to r7
+21 add sp, sp, #1
+22 bx r7
+
+add4:
+23 sub sp, sp, #1 // push
+24 mov r7, lr
+25 mov r6, sp     // load/store can not use sp directly, so copy it to r6
+26 str r7, [r6]   // store link reg to memory
+27 sub sp, sp, #1
+28 mov r6, sp     // load/store can not use sp directly, so copy it to r6
+29 str r2, [r6]   // store c to memory
+2a sub sp, sp, #1
+2b mov r6, sp     // load/store can not use sp directly, so copy it to r6
+2c str r3, [r6]   // store d to memory
+2d bl <add2>
+
+2e mov r2, r0     // move a+b to r2
+2f mov r6, sp
+30 ldr r1, [r6]   // load d to r0
+31 add sp, sp, #1
+32 mov r6, sp
+33 ldr r0, [r6]   // load c to r1
+34 bl <add2>
+35 mov r1, r2     // move a+b to r1
+36 bl add2
+37 add sp, sp, #1 // push
+38 mov r6, sp
+39 ldr r7, [r6]
+3a add sp, sp, #1
+3b bx r7          // return
+
+add2:
+3c sub sp, sp, #1 // push
+3d add r0, r0, r1
+3e add sp, sp, #1 // pop
+3f bx lr          // No further func call, return by using the link reg
+40 nop
+41 nop
+42 nop
+43 nop
